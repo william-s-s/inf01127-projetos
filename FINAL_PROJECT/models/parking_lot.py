@@ -3,8 +3,7 @@ class ParkingLot:
         self.lot_id = lot_id
         self.location = location
         self.price_per_hour = price_per_hour
-        self.is_available = True
+        self.reservations = []
 
     def __str__(self):
-        status = "Available" if self.is_available else "Occupied"
-        return f"Parking Lot {self.lot_id} at {self.location}, {status}, ${self.price_per_hour}/hr"
+        return f"Parking Lot {self.lot_id} at {self.location}, ${self.price_per_hour}/hr ({len(self.reservations)} reservations)"

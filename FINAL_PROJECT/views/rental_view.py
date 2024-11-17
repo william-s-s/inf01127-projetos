@@ -2,13 +2,69 @@ import tkinter as tk
 from tkinter import messagebox, scrolledtext, Scrollbar
 from tkcalendar import DateEntry
 from datetime import datetime
-from controllers.rental_controller import list_available_parking_lots, rent_parking_lot, get_user_rentals
+from controllers.rental_controller import list_available_spaces, rent_parking_space, \
+      get_user_rentals, validate_plate
+from data.storage import parking_spaces
 
 class ParkingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("EasyPark")
+        self.canvas = None
+        self.tooltip = None
         self.create_main_menu()
+
+    def draw_map(self):
+        # Get the start and end dates from the entries
+        start_time_str = self.start_date_entry.get() + " " + self.start_time_entry.get()
+        end_time_str = self.end_date_entry.get() + " " + self.end_time_entry.get()
+        self.start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M")
+        self.end_time = datetime.strptime(end_time_str, "%Y-%m-%d %H:%M")
+
+        # Get available lots
+        available_lots = list_available_spaces(self.start_time, self.end_time)
+
+        if self.canvas:
+            self.canvas.destroy()
+        if self.tooltip:
+            self.tooltip.destroy()
+        
+        self.canvas = tk.Canvas(self.root, height=600, width=600)
+        self.canvas.pack()
+        
+        # Draw the parking lot map
+        self.rectangles = {}
+        for space in parking_spaces.values():
+            free_space = space in available_lots
+            color = "blue" if free_space else "red"
+            offsetx = 10
+            offsety = 40
+            x = 4 * space.x + offsetx
+            y = 4 * space.y + offsety
+            width = 4 * space.width
+            height = 4 * space.height
+
+            rect = self.canvas.create_rectangle(
+                x, y, x + width, y + height,
+                fill=color, tags=str(space.space_id)
+            )
+            self.rectangles[space.space_id] = rect
+
+            # Bind events for hover and click
+            if free_space:
+                self.canvas.tag_bind(rect, "<Enter>", lambda event, s=space: self.show_tooltip(event, s))
+                self.canvas.tag_bind(rect, "<Leave>", self.hide_tooltip)
+                self.canvas.tag_bind(rect, "<Button-1>", lambda event, s=space: self.rent_space(s))
+
+        self.tooltip = tk.Label(self.root, text="", bg="yellow", relief="solid", bd=1, wraplength=150)
+
+    def show_tooltip(self, event, space):
+        attrs = "\n".join(f"{k}: {v}" for k, v in space.attributes.items())
+        self.tooltip.config(text=f"Space {space.space_id}\n{attrs}")
+        self.tooltip.place(x=event.x_root - self.root.winfo_x() + 10, y=event.y_root - self.root.winfo_y() + 10)
+
+    def hide_tooltip(self, event):
+        self.tooltip.place_forget()
 
     def create_main_menu(self):
         self.clear_window()
@@ -16,45 +72,6 @@ class ParkingApp:
         tk.Button(self.root, text="Rent a Parking Lot", command=self.enter_date).pack(pady=10)
         tk.Button(self.root, text="View My Rentals", command=self.show_user_rentals).pack(pady=10)
         tk.Button(self.root, text="Exit", command=self.root.quit).pack(pady=10)
-
-    def list_available_lots(self):
-        # Get the start and end dates from the entries
-        start_date_str = self.start_date_entry.get() + " " + self.start_time_entry.get()
-        end_date_str = self.end_date_entry.get() + " " + self.end_time_entry.get()
-        self.start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M")
-        self.end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M")
-
-        # Call the controller to get the available lots
-        available_lots = list_available_parking_lots(self.start_date, self.end_date)
-
-        self.clear_window()
-
-        tk.Label(self.root, text="Available Parking Lots", font=("Arial", 16)).pack(pady=10)
-
-        if not available_lots:
-            tk.Label(self.root, text="No parking lots available.").pack()
-
-        else:
-            # Create a scrolled text widget to show the available lots
-            st = scrolledtext.ScrolledText(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(),
-                                           cursor="arrow", relief="sunken")
-            st.pack(pady=10)
-            st.configure(state='normal', font=("Arial", 11), background="lightgrey")
-            
-            for lot in available_lots:
-                st.insert(tk.END, "\n")
-                st.insert(tk.END, f"{lot.location} - ${lot.price_per_hour}/hr\n", f"button-{lot.lot_id}")
-                st.tag_configure(f"button-{lot.lot_id}", foreground="black", justify="center", borderwidth=1, 
-                                 relief="raised", background="lightgray", spacing1=5, spacing2=5, spacing3=5)
-                st.tag_bind(f"button-{lot.lot_id}", "<Button-1>", lambda event, lot_id=lot.lot_id: self.rent_lot(lot_id))
-            
-            st.insert(tk.END, "\n\n")
-            st.insert(tk.END, "   Back   ", "buttonback")                
-            st.tag_configure("buttonback", foreground="black", justify="left", borderwidth=1, 
-                             relief="raised", background="lightgray", spacing1=5, spacing2=5, spacing3=5)
-            st.tag_bind("buttonback", "<Button-1>", lambda event: self.create_main_menu())
-
-            st.configure(state='disabled')
 
     def enter_date(self):
         self.clear_window()
@@ -81,10 +98,10 @@ class ParkingApp:
         self.end_time_entry.pack()
 
         # Submit button
-        tk.Button(self.root, text="Submit", command=self.list_available_lots).pack(pady=10)
+        tk.Button(self.root, text="Submit", command=self.draw_map).pack(pady=10)
         tk.Button(self.root, text="Back", command=self.create_main_menu).pack(pady=10)
 
-    def rent_lot(self, lot_id):
+    def rent_space(self, parking_space):
         self.clear_window()
         tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16)).pack(pady=10)
 
@@ -97,11 +114,11 @@ class ParkingApp:
         tk.Label(self.root, text="Payment Method:").pack()
         # For simplicity, we will only accept cash or pix
         self.payment_method_entry = tk.StringVar()
-        self.payment_method_entry.set("cash")
-        payment_methods = ["cash", "pix"]
+        self.payment_method_entry.set("Cash")
+        payment_methods = ["Cash", "Pix"]
         tk.OptionMenu(self.root, self.payment_method_entry, *payment_methods).pack()
 
-        self.lot_id = lot_id
+        self.parking_space = parking_space
 
         # Submit button
         tk.Button(self.root, text="Submit", command=self.handle_rent).pack(pady=10)
@@ -113,7 +130,9 @@ class ParkingApp:
             payment_method = self.payment_method_entry.get()
             if not vehicle_plate or not payment_method:
                 raise ValueError("Vehicle Plate and Payment Method cannot be empty.")
-            rental = rent_parking_lot(self.lot_id, self.start_date, self.end_date, vehicle_plate, payment_method)
+            if not validate_plate(vehicle_plate):
+                raise ValueError("Invalid vehicle plate. Must be in the format ABC1234 or ABC1D23.")
+            rental = rent_parking_space(self.parking_space, self.start_time, self.end_time, vehicle_plate, payment_method)
             if rental:
                 messagebox.showinfo("Success", f"Rental successful!\n{rental}")
             else:

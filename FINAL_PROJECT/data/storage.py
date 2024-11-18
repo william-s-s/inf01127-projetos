@@ -35,4 +35,5 @@ parking_spaces = {
 }
 
 rentals = []
+vehicles = []
 test_user = "test_user"

@@ -4,6 +4,7 @@ from tkcalendar import DateEntry
 from datetime import datetime
 from controllers.rental_controller import list_available_spaces, rent_parking_space, \
       get_user_rentals, validate_plate
+from controllers.vehicle_controller import register_vehicle, find_vehicle_by_plate
 from data.storage import parking_spaces
 
 class ParkingApp:
@@ -70,8 +71,51 @@ class ParkingApp:
         self.clear_window()
         tk.Label(self.root, text="Parking Lot Rental System", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=20)
         tk.Button(self.root, text="Rent a Parking Lot", command=self.enter_date).pack(pady=10)
+        tk.Button(self.root, text="Register Vehicle", command=self.register_vehicle_menu).pack(pady=10)
         tk.Button(self.root, text="View My Rentals", command=self.show_user_rentals).pack(pady=10)
         tk.Button(self.root, text="Exit", command=self.root.quit).pack(pady=10)
+
+    def register_vehicle_menu(self):
+        self.clear_window()
+        tk.Label(self.root, text="Register Vehicle", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
+
+        # Vehicle Plate
+        tk.Label(self.root, text="Vehicle Plate:", background=self.root.cget("bg"), foreground="lightgray").pack()
+        self.vehicle_plate_entry = tk.Entry(self.root)
+        self.vehicle_plate_entry.pack()
+
+        # Vehicle Color
+        tk.Label(self.root, text="Vehicle Color:", background=self.root.cget("bg"), foreground="lightgray").pack()
+        self.vehicle_color_entry = tk.Entry(self.root)
+        self.vehicle_color_entry.pack()
+
+        # Vehicle Model
+        tk.Label(self.root, text="Vehicle Model:", background=self.root.cget("bg"), foreground="lightgray").pack()
+        self.vehicle_model_entry = tk.Entry(self.root)
+        self.vehicle_model_entry.pack()
+
+        # Submit button
+        tk.Button(self.root, text="Submit", command=self.handle_vehicle_registration).pack(pady=10)
+
+        # Back button
+        tk.Button(self.root, text="Back", command=self.create_main_menu).pack(pady=10)
+
+    def handle_vehicle_registration(self):
+        try:
+            plate = self.vehicle_plate_entry.get()
+            color = self.vehicle_color_entry.get()
+            model = self.vehicle_model_entry.get()
+            if not plate or not color or not model:
+                raise ValueError("Vehicle Plate, Color, and Model cannot be empty.")
+            if not validate_plate(plate):
+                raise ValueError("Invalid vehicle plate. Must be in the format ABC1234 or ABC1D23.")
+            vehicle = find_vehicle_by_plate(plate)
+            if vehicle:
+                raise ValueError("Vehicle already registered.")
+            register_vehicle(plate, color, model)
+            messagebox.showinfo("Success", "Vehicle registered successfully.")
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
 
     def enter_date(self):
         self.clear_window()
@@ -128,10 +172,18 @@ class ParkingApp:
         try:
             vehicle_plate = self.vehicle_plate_entry.get()
             payment_method = self.payment_method_entry.get()
+
             if not vehicle_plate or not payment_method:
                 raise ValueError("Vehicle Plate and Payment Method cannot be empty.")
+            
             if not validate_plate(vehicle_plate):
                 raise ValueError("Invalid vehicle plate. Must be in the format ABC1234 or ABC1D23.")
+            
+            vehicle = find_vehicle_by_plate(vehicle_plate)
+            if not vehicle:
+                messagebox.showinfo("Vehicle not registered", "The vehicle is not registered. Please register it.")
+                return
+                
             rental = rent_parking_space(self.parking_space, self.start_time, self.end_time, vehicle_plate, payment_method)
             if rental:
                 messagebox.showinfo("Success", f"Rental successful!\n{rental}")

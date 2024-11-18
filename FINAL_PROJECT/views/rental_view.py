@@ -70,7 +70,7 @@ class ParkingApp:
     def create_main_menu(self):
         self.clear_window()
         tk.Label(self.root, text="Parking Lot Rental System", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=20)
-        tk.Button(self.root, text="Rent a Parking Lot", command=self.enter_date).pack(pady=10)
+        tk.Button(self.root, text="Rent a Parking Space", command=self.enter_date).pack(pady=10)
         tk.Button(self.root, text="Register Vehicle", command=self.register_vehicle_menu).pack(pady=10)
         tk.Button(self.root, text="View My Rentals", command=self.show_user_rentals).pack(pady=10)
         tk.Button(self.root, text="Exit", command=self.root.quit).pack(pady=10)
@@ -119,7 +119,7 @@ class ParkingApp:
 
     def enter_date(self):
         self.clear_window()
-        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
+        tk.Label(self.root, text="Rent a Parking Space", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
         # Start Date & Time
         tk.Label(self.root, text="Start Date:", background=self.root.cget("bg"), foreground="lightgray").pack()

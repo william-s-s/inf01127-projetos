@@ -29,14 +29,14 @@ class ParkingApp:
         if self.tooltip:
             self.tooltip.destroy()
         
-        self.canvas = tk.Canvas(self.root, height=600, width=600)
+        self.canvas = tk.Canvas(self.root, height=500, width=600, bg=self.root.cget("bg"))
         self.canvas.pack()
         
         # Draw the parking lot map
         self.rectangles = {}
         for space in parking_spaces.values():
             free_space = space in available_lots
-            color = "blue" if free_space else "red"
+            color = "#2e7bf0" if free_space else "#cccccc"
             offsetx = 10
             offsety = 40
             x = 4 * space.x + offsetx
@@ -56,7 +56,7 @@ class ParkingApp:
                 self.canvas.tag_bind(rect, "<Leave>", self.hide_tooltip)
                 self.canvas.tag_bind(rect, "<Button-1>", lambda event, s=space: self.rent_space(s))
 
-        self.tooltip = tk.Label(self.root, text="", bg="yellow", relief="solid", bd=1, wraplength=150)
+        self.tooltip = tk.Label(self.root, text="", bg="#93b5c6", relief="solid", bd=1, wraplength=150)
 
     def show_tooltip(self, event, space):
         attrs = "\n".join(f"{k}: {v}" for k, v in space.attributes.items())
@@ -68,31 +68,31 @@ class ParkingApp:
 
     def create_main_menu(self):
         self.clear_window()
-        tk.Label(self.root, text="Parking Lot Rental System", font=("Arial", 16)).pack(pady=20)
+        tk.Label(self.root, text="Parking Lot Rental System", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=20)
         tk.Button(self.root, text="Rent a Parking Lot", command=self.enter_date).pack(pady=10)
         tk.Button(self.root, text="View My Rentals", command=self.show_user_rentals).pack(pady=10)
         tk.Button(self.root, text="Exit", command=self.root.quit).pack(pady=10)
 
     def enter_date(self):
         self.clear_window()
-        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
         # Start Date & Time
-        tk.Label(self.root, text="Start Date:").pack()
+        tk.Label(self.root, text="Start Date:", background=self.root.cget("bg"), foreground="lightgray").pack()
         self.start_date_entry = DateEntry(self.root, date_pattern="yyyy-mm-dd")
-        self.start_date_entry.pack()
+        self.start_date_entry.pack() 
 
-        tk.Label(self.root, text="Start Time (HH:MM):").pack()
+        tk.Label(self.root, text="Start Time (HH:MM):", background=self.root.cget("bg"), foreground="lightgray").pack()
         self.start_time_entry = tk.Entry(self.root)
         self.start_time_entry.insert(0, "10:00")
         self.start_time_entry.pack()
 
         # End Date & Time
-        tk.Label(self.root, text="End Date:").pack()
+        tk.Label(self.root, text="End Date:", background=self.root.cget("bg"), foreground="lightgray").pack()
         self.end_date_entry = DateEntry(self.root, date_pattern="yyyy-mm-dd")
         self.end_date_entry.pack()
 
-        tk.Label(self.root, text="End Time (HH:MM):").pack()
+        tk.Label(self.root, text="End Time (HH:MM):", background=self.root.cget("bg"), foreground="lightgray").pack()
         self.end_time_entry = tk.Entry(self.root)
         self.end_time_entry.insert(0, "12:00")
         self.end_time_entry.pack()
@@ -103,15 +103,15 @@ class ParkingApp:
 
     def rent_space(self, parking_space):
         self.clear_window()
-        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
         # Car Plate
-        tk.Label(self.root, text="Vehicle Plate:").pack()
+        tk.Label(self.root, text="Vehicle Plate:", background=self.root.cget("bg"), foreground="lightgray").pack()
         self.vehicle_plate_entry = tk.Entry(self.root)
         self.vehicle_plate_entry.pack()
 
         # Payment Method
-        tk.Label(self.root, text="Payment Method:").pack()
+        tk.Label(self.root, text="Payment Method:", background=self.root.cget("bg"), foreground="lightgray").pack()
         # For simplicity, we will only accept cash or pix
         self.payment_method_entry = tk.StringVar()
         self.payment_method_entry.set("Cash")
@@ -145,12 +145,12 @@ class ParkingApp:
 
         self.clear_window()
 
-        tk.Label(self.root, text="Your Rentals", font=("Arial", 14)).pack(pady=10)
+        tk.Label(self.root, text="Your Rentals", font=("Arial", 14), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
         if not rentals:
-            tk.Label(self.root, text="No rentals found.").pack()
+            tk.Label(self.root, text="No rentals found.", background=self.root.cget("bg"), foreground="lightgray").pack()
         else:
             for rental in rentals:
-                tk.Label(self.root, text=str(rental)).pack()
+                tk.Label(self.root, text=str(rental), background=self.root.cget("bg"), foreground="lightgray").pack()
 
         tk.Button(self.root, text="Back", command=self.create_main_menu).pack(pady=10)
 
@@ -160,6 +160,7 @@ class ParkingApp:
 
 def run_app():
     root = tk.Tk()
-    app = ParkingApp(root)
     root.geometry("500x600")
+    root.configure(background="#282828")
+    app = ParkingApp(root)
     root.mainloop()

@@ -3,8 +3,8 @@ from models.rental import Rental, PaymentMethod
 
 def is_space_available(parking_space, start_time, end_time):
     for reservation in parking_space.reservations:
-        if start_time >= reservation[0] and start_time <= reservation[1] or \
-           end_time >= reservation[0] and end_time <= reservation[1]:
+        if start_time >= reservation[0] and start_time < reservation[1] or \
+           end_time > reservation[0] and end_time <= reservation[1]:
             return False
     return True
 

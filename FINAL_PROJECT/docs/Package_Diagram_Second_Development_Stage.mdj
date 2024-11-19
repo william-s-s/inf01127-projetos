@@ -385,7 +385,7 @@
 											"top": 662,
 											"width": 87,
 											"height": 13,
-											"text": "Program UI"
+											"text": "System UI"
 										},
 										{
 											"_type": "LabelView",
@@ -2054,7 +2054,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGTQYFHfyxN35E="
 					},
-					"name": "Program UI"
+					"name": "System UI"
 				},
 				{
 					"_type": "UMLPackage",

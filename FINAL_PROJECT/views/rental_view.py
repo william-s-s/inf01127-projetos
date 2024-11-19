@@ -4,7 +4,7 @@ from tkcalendar import DateEntry
 from datetime import datetime
 from controllers.rental_controller import list_available_spaces, rent_parking_space, \
       get_user_rentals, validate_plate
-from controllers.vehicle_controller import register_vehicle, find_vehicle_by_plate
+from controllers.vehicle_controller import register_vehicle, find_vehicle_by_plate, get_registered_vehicles_plates
 from data.storage import parking_spaces
 
 class ParkingApp:
@@ -150,8 +150,11 @@ class ParkingApp:
         tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
         # Car Plate
+        plates = get_registered_vehicles_plates()
         tk.Label(self.root, text="Vehicle Plate:", background=self.root.cget("bg"), foreground="lightgray").pack()
-        self.vehicle_plate_entry = tk.Entry(self.root)
+        self.vehicle_plate_entry = tk.Listbox(self.root, height=5)
+        for i, plate in enumerate(plates):
+            self.vehicle_plate_entry.insert(i, plate)
         self.vehicle_plate_entry.pack()
 
         # Payment Method
@@ -170,7 +173,10 @@ class ParkingApp:
 
     def handle_rent(self):
         try:
-            vehicle_plate = self.vehicle_plate_entry.get()
+            try:
+                vehicle_plate = self.vehicle_plate_entry.get(self.vehicle_plate_entry.curselection())
+            except:
+                vehicle_plate = ""
             payment_method = self.payment_method_entry.get()
 
             if not vehicle_plate or not payment_method:

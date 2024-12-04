@@ -15,8 +15,5 @@ def find_vehicle_by_plate(plate):
             return vehicle
     return None
 
-def get_registered_vehicles_plates():
-    plates = []
-    for vehicle in vehicles:
-        plates.append(vehicle.plate)
-    return plates
+def list_vehicles():
+    return vehicles

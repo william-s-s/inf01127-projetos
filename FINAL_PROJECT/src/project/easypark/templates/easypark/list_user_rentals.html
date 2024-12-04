@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Rentals</title>
+</head>
+<body>
+    <h1>Rentals for {{ user.username }}</h1>
+    <ul>
+        {% for rental in rentals %}
+        <li>{{ rental }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/easypark/">Back to Home</a>
+</body>
+</html>

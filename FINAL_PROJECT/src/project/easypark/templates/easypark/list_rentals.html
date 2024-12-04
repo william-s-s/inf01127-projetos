@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rentals</title>
+</head>
+<body>
+    <h1>Rental List</h1>
+    <ul>
+        {% for rental in rentals %}
+        <li>{{ rental }} - 
+            <a href="/easypark/confirm_payment/{{ rental.id }}/">Confirm Payment</a> |
+            <a href="/easypark/finish_rental/{{ rental.id }}/">Finish Rental</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/easypark/add_rental/">Add Rental</a>
+    <a href="/easypark/">Back to Home</a>
+</body>
+</html>

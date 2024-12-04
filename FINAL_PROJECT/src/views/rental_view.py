@@ -1,10 +1,9 @@
 import tkinter as tk
-from tkinter import messagebox, scrolledtext, Scrollbar
+from tkinter import messagebox, scrolledtext, Scrollbar, OptionMenu
 from tkcalendar import DateEntry
 from datetime import datetime
-from controllers.rental_controller import list_available_spaces, rent_parking_space, \
-      get_user_rentals, validate_plate
-from controllers.vehicle_controller import register_vehicle, find_vehicle_by_plate, get_registered_vehicles_plates
+from controllers.rental_controller import *
+from controllers.vehicle_controller import *
 from data.storage import parking_spaces
 
 class ParkingApp:
@@ -70,10 +69,39 @@ class ParkingApp:
     def create_main_menu(self):
         self.clear_window()
         tk.Label(self.root, text="Parking Lot Rental System", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=20)
-        tk.Button(self.root, text="Rent a Parking Space", command=self.enter_date).pack(pady=10)
+        tk.Button(self.root, text="Rent a Parking Lot", command=self.enter_vehicle).pack(pady=10)
         tk.Button(self.root, text="Register Vehicle", command=self.register_vehicle_menu).pack(pady=10)
         tk.Button(self.root, text="View My Rentals", command=self.show_user_rentals).pack(pady=10)
         tk.Button(self.root, text="Exit", command=self.root.quit).pack(pady=10)
+
+    def enter_vehicle(self):
+        self.clear_window()
+        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
+
+        # Create a list of vehicles (using a dropdown)
+        vehicles = list_vehicles()
+        if not vehicles:
+            self.clear_window()
+            messagebox.showinfo("No vehicles found", "Please register a vehicle first.")
+            # Redirect to the main menu
+            self.create_main_menu()
+            return
+        
+        vehicle_list = [f"{vehicle.plate} - {vehicle.color} {vehicle.model}" for vehicle in vehicles]
+        self.vehicle_entry = tk.StringVar()
+        self.vehicle_entry.set(vehicle_list[0])
+        vehicle_menu = OptionMenu(self.root, self.vehicle_entry, *vehicle_list)
+        vehicle_menu.pack()
+        self.vehicle_entry.trace_add("write", self.update_vehicle_plate)
+        
+        # Submit button
+        tk.Button(self.root, text="Submit", command=self.enter_date).pack(pady=10)
+        tk.Button(self.root, text="Back", command=self.create_main_menu).pack(pady=10)
+
+    def update_vehicle_plate(self, *args):
+        vehicle_str = self.vehicle_entry.get()
+        plate = vehicle_str.split(" - ")[0]
+        self.vehicle_plate = plate
 
     def register_vehicle_menu(self):
         self.clear_window()
@@ -119,7 +147,7 @@ class ParkingApp:
 
     def enter_date(self):
         self.clear_window()
-        tk.Label(self.root, text="Rent a Parking Space", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
+        tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
         # Start Date & Time
         tk.Label(self.root, text="Start Date:", background=self.root.cget("bg"), foreground="lightgray").pack()
@@ -149,14 +177,6 @@ class ParkingApp:
         self.clear_window()
         tk.Label(self.root, text="Rent a Parking Lot", font=("Arial", 16), background=self.root.cget("bg"), foreground="lightgray").pack(pady=10)
 
-        # Car Plate
-        plates = get_registered_vehicles_plates()
-        tk.Label(self.root, text="Vehicle Plate:", background=self.root.cget("bg"), foreground="lightgray").pack()
-        self.vehicle_plate_entry = tk.Listbox(self.root, height=5)
-        for i, plate in enumerate(plates):
-            self.vehicle_plate_entry.insert(i, plate)
-        self.vehicle_plate_entry.pack()
-
         # Payment Method
         tk.Label(self.root, text="Payment Method:", background=self.root.cget("bg"), foreground="lightgray").pack()
         # For simplicity, we will only accept cash or pix
@@ -173,24 +193,12 @@ class ParkingApp:
 
     def handle_rent(self):
         try:
-            try:
-                vehicle_plate = self.vehicle_plate_entry.get(self.vehicle_plate_entry.curselection())
-            except:
-                vehicle_plate = ""
             payment_method = self.payment_method_entry.get()
 
-            if not vehicle_plate or not payment_method:
-                raise ValueError("Vehicle Plate and Payment Method cannot be empty.")
-            
-            if not validate_plate(vehicle_plate):
-                raise ValueError("Invalid vehicle plate. Must be in the format ABC1234 or ABC1D23.")
-            
-            vehicle = find_vehicle_by_plate(vehicle_plate)
-            if not vehicle:
-                messagebox.showinfo("Vehicle not registered", "The vehicle is not registered. Please register it.")
-                return
+            if not payment_method:
+                raise ValueError("Payment Method cannot be empty.")
                 
-            rental = rent_parking_space(self.parking_space, self.start_time, self.end_time, vehicle_plate, payment_method)
+            rental = rent_parking_space(self.parking_space, self.start_time, self.end_time, self.vehicle_plate, payment_method)
             if rental:
                 messagebox.showinfo("Success", f"Rental successful!\n{rental}")
             else:

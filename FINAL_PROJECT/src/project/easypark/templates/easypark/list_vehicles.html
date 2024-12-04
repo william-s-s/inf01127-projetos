@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicles</title>
+</head>
+<body>
+    <h1>Your Vehicles</h1>
+    <ul>
+        {% for vehicle in vehicles %}
+        <li>{{ vehicle }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/easypark/add_vehicle/">Add Vehicle</a>
+    <a href="/easypark/">Back to Home</a>
+</body>
+</html>

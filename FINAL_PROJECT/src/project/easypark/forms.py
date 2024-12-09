@@ -28,5 +28,5 @@ class VehicleForm(forms.ModelForm):
 class RentalForm(forms.ModelForm):
     class Meta:
         model = Rental
-        fields = ['parking_space', 'vehicle', 'entry_time', 'exit_time', 'total_price', 'payment_method', 'finished', 'payment_confirmed']
+        fields = ['parking_space', 'vehicle', 'entry_time', 'exit_time', 'payment_method']
 

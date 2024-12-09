@@ -15,7 +15,7 @@ class ParkingSpace(models.Model):
     covered = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.position
     
 
 class User(models.Model):

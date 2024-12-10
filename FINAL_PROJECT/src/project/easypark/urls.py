@@ -12,6 +12,7 @@ urlpatterns = [
     path('manager_login/', views.manager_login, name='manager_login'),
     path('parking_spaces/', views.list_parking_spaces, name='parking_spaces'),
     path('manager/add_parking_space/<int:manager_id>/', views.add_parking_space, name='add_parking_space'),
+    path('manager/manage_parking_spaces/<int:manager_id>/', views.manage_parking_spaces, name='manage_parking_spaces'),
     path('manager/rentals/<int:manager_id>/', views.list_rentals, name='rentals'),
     path('user/user_home/<int:user_id>/', views.user_home, name='user_home'),
     path('user/user_vehicles/<int:user_id>/', views.list_user_vehicles, name='user_vehicles'),

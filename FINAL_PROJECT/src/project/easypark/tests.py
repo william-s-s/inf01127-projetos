@@ -2,7 +2,6 @@ from django.test import TestCase
 
 from easypark.models import User, Manager, ParkingSpace, Vehicle, Rental
 
-
 class UserTestCase(TestCase):
     def setUp(self):
         User.objects.create(name='Alice', username='alice', email='alice@email.com', password='password', phone='1111111111111')
@@ -13,7 +12,6 @@ class UserTestCase(TestCase):
         self.assertEqual(user.email, 'alice@email.com')
         self.assertEqual(user.password, 'password')
         self.assertEqual(user.phone, '1111111111111')
-
     
 class ManagerTestCase(TestCase):
     def setUp(self):
@@ -27,6 +25,3 @@ class ManagerTestCase(TestCase):
         self.assertEqual(manager.password, 'password')
         self.assertEqual(manager.phone, '2222222222222')
         self.assertEqual(manager.manager_code, '123456')
-
-
-    

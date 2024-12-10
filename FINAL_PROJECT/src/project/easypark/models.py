@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class ParkingSpace(models.Model):
     class ParkingSpaceSize(models.TextChoices):
         SMALL = 'S', 'Small'
@@ -16,7 +15,6 @@ class ParkingSpace(models.Model):
 
     def __str__(self):
         return self.position
-    
 
 class User(models.Model):
     name = models.CharField('full name', max_length=200)
@@ -28,14 +26,12 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-    
 
 class Manager(User):
     manager_code = models.CharField('manager code', max_length=6)
 
     def __str__(self):
         return self.name
-    
 
 class Vehicle(models.Model):
     license_plate = models.CharField('licence plate', max_length=7) # ABC1234 or ABC1D23
@@ -45,7 +41,6 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return self.license_plate
-    
 
 class Rental(models.Model):
     class PaymentMethod(models.TextChoices):

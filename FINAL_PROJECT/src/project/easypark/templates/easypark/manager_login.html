@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Rental</title>
+    <title>Manager Login</title>
 </head>
 <body>
-    <h1>Add a Rental</h1>
+    <h1>Manager Login</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add</button>
+        <button type="submit">Login</button>
     </form>
     <a href="/easypark/">Back to Home</a>
 </body>

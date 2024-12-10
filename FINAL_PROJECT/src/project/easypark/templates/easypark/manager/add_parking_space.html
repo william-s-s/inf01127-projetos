@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Vehicle</title>
+    <title>Add Parking Space</title>
 </head>
 <body>
-    <h1>Add a Vehicle</h1>
+    <h1>Register a Parking Space</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add</button>
     </form>
-    <a href="/easypark/">Back to Home</a>
+    <a href="/easypark/manager/manager_home/{{ user_id }}">Back to Home</a>
 </body>
 </html>

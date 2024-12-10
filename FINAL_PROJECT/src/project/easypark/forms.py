@@ -53,3 +53,8 @@ class RentalForm(forms.ModelForm):
             'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }
 
+
+
+
+    
+

@@ -65,13 +65,14 @@ def add_parking_space(request, manager_id):
         form = ParkingSpaceForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('easypark:manager/manage_parking_spaces', args=(manager_id,)))
+            parking_spaces = ParkingSpace.objects.all()
+            return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'manager_id': manager_id})
     else:
         form = ParkingSpaceForm()
     return render(request, 'easypark/manager/add_parking_space.html', {'form': form})
 
 def manage_parking_spaces(request, manager_id):
-    parking_spaces = ParkingSpace.objects.filter(manager=manager_id)
+    parking_spaces = ParkingSpace.objects.all()
     return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'manager_id': manager_id})
 
 def list_user_vehicles(request, user_id):
@@ -84,9 +85,8 @@ def add_vehicle(request, user_id):
         form.instance.owner = User.objects.get(id=user_id)
         if form.is_valid():
             form.save()
-            # List user vehicles
             vehicles = Vehicle.objects.filter(owner=user_id)
-            return HttpResponseRedirect(reverse('easypark/user/user_vehicles:user', args=(user_id,)))
+            return render(request, 'easypark/user/user_vehicles.html', {'vehicles': vehicles, 'user_id': user_id})
     else:
         form = VehicleForm()
     return render(request, 'easypark/user/add_vehicle.html', {'form': form, 'user_id': user_id})
@@ -105,8 +105,8 @@ def add_rental(request, user_id):
         form = RentalForm(request.POST)
         if form.is_valid():
             form.save()
-            # List user rentals
-            rentals = Rental.objects.filter(user=user_id)
+            vehicles = Vehicle.objects.filter(owner=user_id)
+            rentals = Rental.objects.filter(vehicle__in=vehicles)
             return render(request, 'easypark/user/user_rentals.html', {'rentals': rentals, 'user_id': user_id})
     else:
         form = RentalForm()

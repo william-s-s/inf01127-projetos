@@ -1,4 +1,5 @@
 from django.db import models
+from math import ceil
 
 class ParkingSpace(models.Model):
     class ParkingSpaceSize(models.TextChoices):
@@ -28,7 +29,7 @@ class User(models.Model):
         return self.name
 
 class Manager(User):
-    manager_code = models.CharField('manager code', max_length=6)
+    manager_code = models.CharField('manager code', max_length=6, unique=True) # 123456
 
     def __str__(self):
         return self.name
@@ -51,10 +52,27 @@ class Rental(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True)
     entry_time = models.DateTimeField('entry time')
     exit_time = models.DateTimeField('exit time')
-    total_price = models.DecimalField('total price', max_digits=6, decimal_places=2)
+    total_price = models.DecimalField('total price', max_digits=8, decimal_places=2, default=0.0)
     payment_method = models.CharField(max_length=4, choices=PaymentMethod.choices, default=PaymentMethod.CASH)
     finished = models.BooleanField(default=False)
     payment_confirmed = models.BooleanField('payment confirmed', default=False)
+
+    def calculate_total_price(self):
+        if self.entry_time and self.exit_time and self.parking_space:
+            duration = self.exit_time - self.entry_time
+            hours = ceil(duration.total_seconds() / 3600)
+            return round(hours * self.parking_space.price, 2)
+        return 0.0
+    
+    def save(self, *args, **kwargs):
+        self.total_price = self.calculate_total_price()
+        super().save(*args, **kwargs)
+    
+    def is_valid(self):
+        if self.entry_time and self.exit_time and self.entry_time >= self.exit_time:
+            self.add_error(None, 'Entry time must be before exit time')
+            return False
+        return super().is_valid()
 
     def __str__(self):
         return f'{self.parking_space.position} - {self.entry_time} - {self.vehicle}'

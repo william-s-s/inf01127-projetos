@@ -38,7 +38,7 @@ class Vehicle(models.Model):
     license_plate = models.CharField('licence plate', max_length=7) # ABC1234 or ABC1D23
     model = models.CharField(max_length=200)
     color = models.CharField(max_length=200)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.license_plate
@@ -67,12 +67,6 @@ class Rental(models.Model):
     def save(self, *args, **kwargs):
         self.total_price = self.calculate_total_price()
         super().save(*args, **kwargs)
-    
-    def is_valid(self):
-        if self.entry_time and self.exit_time and self.entry_time >= self.exit_time:
-            self.add_error(None, 'Entry time must be before exit time')
-            return False
-        return super().is_valid()
 
     def __str__(self):
         return f'{self.parking_space.position} - {self.entry_time} - {self.vehicle}'

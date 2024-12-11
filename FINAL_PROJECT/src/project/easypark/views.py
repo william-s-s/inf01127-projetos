@@ -38,7 +38,7 @@ def user_login(request):
             password = form.cleaned_data['password']
             user = User.objects.filter(username=username, password=password).first()
             if user:
-                return HttpResponseRedirect(reverse('easypark:user_home', args=(user.id,)))
+                return HttpResponseRedirect(reverse('easypark:user_home', args=(user.username,)))
     else:
         form = LoginForm()
     return render(request, 'easypark/user_login.html', {'form': form})
@@ -51,7 +51,7 @@ def manager_login(request):
             password = form.cleaned_data['password']
             manager = Manager.objects.filter(username=username, password=password).first()
             if manager:
-                return HttpResponseRedirect(reverse('easypark:manager_home', args=(manager.id,)))
+                return HttpResponseRedirect(reverse('easypark:manager_home', args=(manager.username,)))
     else:
         form = LoginForm()
     return render(request, 'easypark/manager_login.html', {'form': form})
@@ -60,65 +60,66 @@ def list_parking_spaces(request):
     parking_spaces = ParkingSpace.objects.all()
     return render(request, 'easypark/parking_spaces.html', {'parking_spaces': parking_spaces})
 
-def add_parking_space(request, manager_id):
+def add_parking_space(request, username):
     if request.method == 'POST':
         form = ParkingSpaceForm(request.POST)
         if form.is_valid():
             form.save()
             parking_spaces = ParkingSpace.objects.all()
-            return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'manager_id': manager_id})
+            return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'username': username})
     else:
         form = ParkingSpaceForm()
     return render(request, 'easypark/manager/add_parking_space.html', {'form': form})
 
-def manage_parking_spaces(request, manager_id):
+def manage_parking_spaces(request, username):
     parking_spaces = ParkingSpace.objects.all()
-    return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'manager_id': manager_id})
+    return render(request, 'easypark/manager/manage_parking_spaces.html', {'parking_spaces': parking_spaces, 'username': username})
 
-def list_user_vehicles(request, user_id):
-    vehicles = Vehicle.objects.filter(owner=user_id)
-    return render(request, 'easypark/user/user_vehicles.html', {'vehicles': vehicles, 'user_id': user_id})
+def list_user_vehicles(request, username):
+    user = User.objects.get(username=username)
+    vehicles = Vehicle.objects.filter(owner=user)
+    return render(request, 'easypark/user/user_vehicles.html', {'vehicles': vehicles, 'username': username})
 
-def add_vehicle(request, user_id):
+def add_vehicle(request, username):
     if request.method == 'POST':
         form = VehicleForm(request.POST)
-        form.instance.owner = User.objects.get(id=user_id)
         if form.is_valid():
-            form.save()
-            vehicles = Vehicle.objects.filter(owner=user_id)
-            return render(request, 'easypark/user/user_vehicles.html', {'vehicles': vehicles, 'user_id': user_id})
+            user = User.objects.get(username=username)
+            form.save(owner=user)
+            vehicles = Vehicle.objects.filter(owner=user)
+            return render(request, 'easypark/user/user_vehicles.html', {'vehicles': vehicles, 'username': username})
     else:
         form = VehicleForm()
-    return render(request, 'easypark/user/add_vehicle.html', {'form': form, 'user_id': user_id})
+    return render(request, 'easypark/user/add_vehicle.html', {'form': form, 'username': username})
 
-def list_rentals(request, manager_id):
+def list_rentals(request, username):
     rentals = Rental.objects.all()
-    return render(request, 'easypark/rentals.html', {'rentals': rentals, 'manager_id': manager_id})
+    return render(request, 'easypark/manager/rentals.html', {'rentals': rentals, 'username': username})
 
-def list_user_rentals(request, user_id):
-    vehicles = Vehicle.objects.filter(owner=user_id)
+def list_user_rentals(request, username):
+    user = User.objects.get(username=username)
+    vehicles = Vehicle.objects.filter(owner=user)
     rentals = Rental.objects.filter(vehicle__in=vehicles)
-    return render(request, 'easypark/user/user_rentals.html', {'rentals': rentals, 'user_id': user_id})
+    return render(request, 'easypark/user/user_rentals.html', {'rentals': rentals, 'username': username})
 
-def add_rental(request, user_id):
+def add_rental(request, username):
     if request.method == 'POST':
         form = RentalForm(request.POST)
         if form.is_valid():
             form.save()
-            vehicles = Vehicle.objects.filter(owner=user_id)
+            user = User.objects.get(username=username)
+            vehicles = Vehicle.objects.filter(owner=user)
             rentals = Rental.objects.filter(vehicle__in=vehicles)
-            return render(request, 'easypark/user/user_rentals.html', {'rentals': rentals, 'user_id': user_id})
+            return render(request, 'easypark/user/user_rentals.html', {'rentals': rentals, 'username': username})
     else:
         form = RentalForm()
-    return render(request, 'easypark/user/add_rental.html', {'form': form, 'user_id': user_id})
+    return render(request, 'easypark/user/add_rental.html', {'form': form, 'username': username})
 
-def user_home(request, user_id):
-    user = User.objects.get(id=user_id)
-    return render(request, 'easypark/user/user_home.html', {'user': user})
+def user_home(request, username):
+    return render(request, 'easypark/user/user_home.html', {'username': username})
 
-def manager_home(request, manager_id):
-    manager = Manager.objects.get(id=manager_id)
-    return render(request, 'easypark/manager/manager_home.html', {'manager': manager})
+def manager_home(request, username):
+    return render(request, 'easypark/manager/manager_home.html', {'username': username})
 
 """
 def confirm_payment(request, rental_id):

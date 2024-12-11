@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('license_plate', models.CharField(max_length=7, verbose_name='licence plate')),
                 ('model', models.CharField(max_length=200)),
                 ('color', models.CharField(max_length=200)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='easypark.user')),
+                ('owner', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='easypark.user')),
             ],
         ),
         migrations.CreateModel(

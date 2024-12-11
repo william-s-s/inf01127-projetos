@@ -9,11 +9,11 @@
     <ul>
         {% for rental in rentals %}
         <li>{{ rental }} - 
-            <a href="/easypark/confirm_payment/{{ rental.id }}/">Confirm Payment</a> |
-            <a href="/easypark/finish_rental/{{ rental.id }}/">Finish Rental</a>
+            <a href="/easypark/confirm_payment/{{ username }}/">Confirm Payment</a> |
+            <a href="/easypark/finish_rental/{{ username }}/">Finish Rental</a>
         </li>
         {% endfor %}
     </ul>
-    <a href="/easypark/manager/manager_home/{{ manager_id }}">Back to Home</a>
+    <a href="/easypark/manager/manager_home/{{ username }}/">Back to Home</a>
 </body>
 </html>

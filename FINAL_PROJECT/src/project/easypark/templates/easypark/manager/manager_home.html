@@ -5,9 +5,9 @@
     <title>Manager Home</title>
 </head>
 <body>
-    <h1>Manager Home</h1>
-    <a href="/easypark/manager/add_parking_space/{{ manager.id }}">Add Parking Space</a>
-    <a href="/easypark/manager/manage_parking_spaces/{{ manager.id }}">Manage Parking Spaces</a>
-    <a href="/easypark/manager/rentals/{{ manager.id }}">Manage Rentals</a>
+    <h1>Welcome, {{ username }}</h1>
+    <a href="/easypark/manager/add_parking_space/{{ username }}/">Add Parking Space</a>
+    <a href="/easypark/manager/manage_parking_spaces/{{ username }}/">Manage Parking Spaces</a>
+    <a href="/easypark/manager/rentals/{{ username }}/">Manage Rentals</a>
     <a href="/easypark/">Logout</a>
 </body>

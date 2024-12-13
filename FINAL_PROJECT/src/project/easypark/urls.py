@@ -1,23 +1,24 @@
 from django.urls import path
 
-from . import views
+from .views import homepage_views, user_views, manager_views
 
 app_name = 'easypark'
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('register_user/', views.register_user, name='register_user'),
-    path('register_manager/', views.register_manager, name='register_manager'),
-    path('user_login/', views.user_login, name='user_login'),
-    path('manager_login/', views.manager_login, name='manager_login'),
-    path('parking_spaces/', views.list_parking_spaces, name='parking_spaces'),
-    path('user/user_home/<str:username>/', views.user_home, name='user_home'),
-    path('user/user_vehicles/<str:username>/', views.list_user_vehicles, name='user_vehicles'),
-    path('user/add_vehicle/<str:username>/', views.add_vehicle, name='add_vehicle'),
-    path('user/user_rentals/<str:username>/', views.list_user_rentals, name='user_rentals'),
-    path('user/add_rental/<str:username>/', views.add_rental, name='add_rental'),
-    path('manager/manager_home/<str:username>/', views.manager_home, name='manager_home'),
-    path('manager/add_parking_space/<str:username>/', views.add_parking_space, name='add_parking_space'),
-    path('manager/manage_parking_spaces/<str:username>/', views.manage_parking_spaces, name='manage_parking_spaces'),
-    path('manager/rentals/<str:username>/', views.list_rentals, name='rentals')
+    path('', homepage_views.index, name='index'),
+    path('register-user/', homepage_views.register_user, name='register-user'),
+    path('register-manager/', homepage_views.register_manager, name='register-manager'),
+    path('login-user/', homepage_views.login_user, name='login-user'),
+    path('login-manager/', homepage_views.login_manager, name='login-manager'),
+    path('parking-spaces/', homepage_views.list_parking_spaces, name='list-parking-spaces'),
+    path('user/home/<str:username>/', user_views.user_home, name='user-home'),
+    path('user/vehicles/<str:username>/', user_views.list_user_vehicles, name='user-vehicles'),
+    path('user/vehicles/add-vehicle/<str:username>/', user_views.add_vehicle, name='add-vehicle'),
+    path('user/rentals/<str:username>/', user_views.list_user_rentals, name='user-rentals'),
+    path('user/rentals/add-rental/<str:username>/', user_views.add_rental, name='add-rental'),
+    path('manager/home/<str:username>/', manager_views.manager_home, name='manager-home'),
+    path('manager/add-parking-space/<str:username>/', manager_views.add_parking_space, name='add-parking-space'),
+    path('manager/rentals/<str:username>/', manager_views.list_rentals, name='manage-rentals'),
+    path('manager/rentals/confirm/<int:rental_id>/', manager_views.confirm_payment, name='confirm-payment'),
+    path('manager/rentals/cancel/<int:rental_id>/', manager_views.cancel_rental, name='cancel-rental')
 ]

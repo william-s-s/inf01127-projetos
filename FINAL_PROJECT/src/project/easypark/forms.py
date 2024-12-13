@@ -46,21 +46,24 @@ class VehicleForm(forms.ModelForm):
         }
 
     def _check_license_plate(self, license_plate):
-        return bool(re.match(r'^[A-Z]{3}\d{4}$', license_plate))
+        return bool(re.match(r'^([A-Z]|[a-z]){3}\d{4}$', license_plate))
 
     def is_valid(self):
         license_plate = self.data['license_plate']
         if not self._check_license_plate(license_plate):
             self.add_error('license_plate', 'Invalid license plate')
             return False
+        
         model = self.data['model']
         if not model.isascii():
             self.add_error('model', 'Model must be ASCII')
             return False
+        
         color = self.data['color']
         if not color.isascii():
             self.add_error('color', 'Color must be ASCII')
             return False
+        
         return True
     
     def save(self, owner, commit=True):
@@ -87,6 +90,7 @@ class RentalForm(forms.ModelForm):
         if entry_time and exit_time and entry_time >= exit_time:
             self.add_error(None, 'Entry time must be before exit time')
             return False
+        
         return super().is_valid()
 
 

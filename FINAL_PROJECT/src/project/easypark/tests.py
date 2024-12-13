@@ -4,7 +4,13 @@ from easypark.models import User, Manager, ParkingSpace, Vehicle, Rental
 
 class UserTestCase(TestCase):
     def setUp(self):
-        User.objects.create(name='Alice', username='alice', email='alice@email.com', password='password', phone='1111111111111')
+        User.objects.create(
+            name='Alice', 
+            username='alice', 
+            email='alice@email.com', 
+            password='password', 
+            phone='1111111111111'
+        )
 
     def test_user(self):
         user = User.objects.get(username='alice')
@@ -15,8 +21,14 @@ class UserTestCase(TestCase):
     
 class ManagerTestCase(TestCase):
     def setUp(self):
-        Manager.objects.create(name='Mario', username='mario', email='mario@email.com', password='password', phone='2222222222222',
-                               manager_code='123456')
+        Manager.objects.create(
+            name='Mario', 
+            username='mario', 
+            email='mario@email.com', 
+            password='password', 
+            phone='2222222222222',
+            manager_code='123456'
+        )
         
     def test_manager(self):
         manager = Manager.objects.get(username='mario')

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parking Spaces</title>
+</head>
+<body>
+    <h1>Parking Spaces</h1>
+    <ul>
+        {% for space in parking_spaces %}
+        <li>{{ space }} - 
+            <a href="/easypark/manager/edit-space/{{ username }}/{{ space.id }}/">Edit</a> | 
+            <a href="/easypark/manager/delete-space/{{ username }}/{{ space.id }}/">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/easypark/manager/parking-spaces/add-space/{{ username }}">Add Parking Space</a>
+    <a href="/easypark/manager/home/{{ username }}/">Back to Home</a>
+</body>
+</html>

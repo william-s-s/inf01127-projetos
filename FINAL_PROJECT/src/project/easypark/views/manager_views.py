@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from ..models import Rental
+from ..models import Rental, ParkingSpace
 from ..forms import ParkingSpaceForm
 
 def add_parking_space(request, username):
@@ -8,16 +8,17 @@ def add_parking_space(request, username):
         form = ParkingSpaceForm(request.POST)
         if form.is_valid():
             form.save()
+            parking_spaces = ParkingSpace.objects.all()
             return render(
                 request,
-                'easypark/manager/home.html',
-                {'username': username}
+                'easypark/manager/parking-spaces.html',
+                {'username': username, 'parking_spaces': parking_spaces}
             )
     else:
         form = ParkingSpaceForm()
     return render(
         request, 
-        'easypark/manager/add-parking-space.html', 
+        'easypark/manager/parking-spaces/add-space.html', 
         {'form': form, 'username': username}
     )
 
@@ -36,25 +37,31 @@ def manager_home(request, username):
         {'username': username}
     )
 
-def confirm_payment(request, rental_id):
+def confirm_payment(request, username, rental_id):
     rental = Rental.objects.get(id=rental_id)
     rental.payment_confirmed = True
     rental.save()
-    current_manager = request.user
     rentals = Rental.objects.all()
     return render(
         request,
         'easypark/manager/rentals.html',
-        {'rentals': rentals, 'username': current_manager.username}
+        {'rentals': rentals, 'username': username}
     )
 
-def cancel_rental(request, rental_id):
+def cancel_rental(request, username, rental_id):
     rental = Rental.objects.get(id=rental_id)
-    rental.delete()
-    current_manager = request.user
+    rental.canceled = True
     rentals = Rental.objects.all()
     return render(
         request,
         'easypark/manager/rentals.html',
-        {'rentals': rentals, 'username': current_manager.username}
+        {'rentals': rentals, 'username': username}
+    )
+
+def list_parking_spaces(request, username):
+    parking_spaces = ParkingSpace.objects.all()
+    return render(
+        request, 
+        'easypark/manager/parking-spaces.html', 
+        {'username': username, 'parking_spaces': parking_spaces}
     )

@@ -8,8 +8,11 @@
     <h1>Parking Spaces</h1>
     <ul>
         {% for space in parking_spaces %}
-        <li>{{ space }}</li>
+        <li>{{ space }} - 
+            <a href="/easypark/user/rentals/add-rental/{{ username }}/{{ space.position }}/">Rent</a> 
+        </li>
         {% endfor %}
     </ul>
+    <a href="/easypark/user/home/{{ username }}/">Back to Home</a>
 </body>
 </html>

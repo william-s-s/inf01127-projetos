@@ -117,11 +117,3 @@ def login_manager(request):
         'easypark/login-manager.html', 
         {'form': form}
     )
-
-def list_parking_spaces(request):
-    parking_spaces = ParkingSpace.objects.all()
-    return render(
-        request, 
-        'easypark/parking-spaces.html', 
-        {'parking_spaces': parking_spaces}
-    )

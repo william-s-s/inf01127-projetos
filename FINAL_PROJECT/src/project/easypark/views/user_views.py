@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from ..models import User, Vehicle, Rental
+from ..models import User, Vehicle, Rental, ParkingSpace
 from ..forms import VehicleForm, RentalForm
 
 def user_home(request, username):
@@ -39,11 +39,11 @@ def add_vehicle(request, username):
         {'form': form, 'username': username}
     )
 
-def add_rental(request, username):
+def add_rental(request, username, position):
     if request.method == 'POST':
         form = RentalForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(position=position)
             user = User.objects.get(username=username)
             vehicles = Vehicle.objects.filter(owner=user)
             rentals = Rental.objects.filter(vehicle__in=vehicles)
@@ -68,4 +68,12 @@ def list_user_rentals(request, username):
         request,
         'easypark/user/rentals.html',
         {'rentals': rentals, 'username': username}
+    )
+
+def list_parking_spaces(request, username):
+    parking_spaces = ParkingSpace.objects.all()
+    return render(
+        request, 
+        'easypark/user/parking-spaces.html', 
+        {'username': username, 'parking_spaces': parking_spaces}
     )

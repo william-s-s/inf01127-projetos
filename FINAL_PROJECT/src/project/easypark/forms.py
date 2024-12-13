@@ -77,7 +77,7 @@ class VehicleForm(forms.ModelForm):
 class RentalForm(forms.ModelForm):
     class Meta:
         model = Rental
-        fields = ['parking_space', 'vehicle', 'entry_time', 'exit_time', 'payment_method']
+        fields = ['vehicle', 'entry_time', 'exit_time', 'payment_method']
         widgets = {
             'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'})
@@ -92,6 +92,13 @@ class RentalForm(forms.ModelForm):
             return False
         
         return super().is_valid()
+    
+    def save(self, position, commit=True):
+        rental = super().save(commit=False)
+        rental.parking_space = ParkingSpace.objects.get(position=position)
+        if commit:
+            rental.save()
+        return rental
 
 
 

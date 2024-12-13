@@ -35,7 +35,7 @@ class Manager(User):
         return self.name
 
 class Vehicle(models.Model):
-    license_plate = models.CharField('licence plate', max_length=7) # ABC1234 or ABC1D23
+    license_plate = models.CharField('licence plate', max_length=7, unique=True) # ABC1234 or ABC1D23
     model = models.CharField(max_length=200)
     color = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -55,6 +55,7 @@ class Rental(models.Model):
     total_price = models.DecimalField('total price', max_digits=8, decimal_places=2, default=0.0)
     payment_method = models.CharField(max_length=4, choices=PaymentMethod.choices, default=PaymentMethod.CASH)
     payment_confirmed = models.BooleanField('payment confirmed', default=False)
+    canceled = models.BooleanField(default=False)
 
     def calculate_total_price(self):
         if self.entry_time and self.exit_time and self.parking_space:
@@ -70,6 +71,6 @@ class Rental(models.Model):
     def __str__(self):
         vehicle = self.vehicle.license_plate if self.vehicle else 'Deleted'
         parking_space = self.parking_space.position if self.parking_space else 'Deleted'
-        return f'{parking_space} - {self.entry_time} - {vehicle} - {self.total_price}'
+        return f'{parking_space} - {self.entry_time} - {self.exit_time} - {vehicle}'
 
 

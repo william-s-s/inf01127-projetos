@@ -1,6 +1,5 @@
 from django import forms
 from .models import User, Manager, ParkingSpace, Vehicle, Rental
-import re
 
 class UserRegistrationForm(forms.ModelForm):
     class Meta:
@@ -95,6 +94,13 @@ class RentalForm(forms.ModelForm):
             rental.save()
         return rental
 
+class RentalTimeForm(forms.Form):
+    entry_time = forms.DateTimeField(label='Entry time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    exit_time = forms.DateTimeField(label='Exit time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    widgets = {
+        'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+    }
 
 
 

@@ -70,9 +70,6 @@ class Manager(User):
 
     @staticmethod
     def validate_data(data):
-        username = data['username']
-        password = data['password']
-        phone = data['phone']
         manager_code = data['manager_code']
         return (
             User.validate_data(data) and

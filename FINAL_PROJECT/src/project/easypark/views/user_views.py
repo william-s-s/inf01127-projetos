@@ -44,16 +44,17 @@ def add_vehicle(request, username):
     )
 
 def add_rental(request, username, entry_time, exit_time, position):
+    user = User.objects.get(username=username)
     if request.method == 'POST':
         form = RentalForm(
             request.POST, 
             entry_time=entry_time, 
             exit_time=exit_time, 
-            position=position
+            position=position,
+            user=user
         )
         if form.is_valid():
             form.save()
-            user = User.objects.get(username=username)
             vehicles = Vehicle.objects.filter(owner=user)
             rentals = Rental.objects.filter(vehicle__in=vehicles)
             return render(
@@ -65,7 +66,8 @@ def add_rental(request, username, entry_time, exit_time, position):
         form = RentalForm(
             entry_time=entry_time, 
             exit_time=exit_time, 
-            position=position
+            position=position,
+            user=user
         )
     return render(
         request, 

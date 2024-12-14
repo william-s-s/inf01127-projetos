@@ -9,8 +9,7 @@
     <ul>
         {% for vehicle in vehicles %}
         <li>{{ vehicle }} - 
-            <a href="/easypark/user/vehicles/edit-vehicle/{{ vehicle.id }}/">Edit</a> | 
-            <a href="/easypark/user/vehicles/remove-vehicle/{{ vehicle.id }}/">Remove</a>
+            <a href="/easypark/user/vehicles/remove-vehicle/{{ username }}/{{ vehicle.id }}/">Remove</a>
         </li>
         {% endfor %}
     </ul>

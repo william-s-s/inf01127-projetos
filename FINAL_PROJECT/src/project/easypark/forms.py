@@ -80,7 +80,9 @@ class RentalForm(forms.ModelForm):
             'exit_time': kwargs.pop('exit_time'),
             'position': kwargs.pop('position')
         }
+        user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+        self.fields['vehicle'].queryset = Vehicle.objects.filter(owner=user)
 
     def is_valid(self):
         data = self.data.copy()

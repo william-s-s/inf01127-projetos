@@ -9,6 +9,11 @@ class UserRegistrationForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput
         }
+    
+    def is_valid(self):
+        if not User.validate_data(self.data):
+            return False
+        return super().is_valid()
 
 class ManagerRegistrationForm(forms.ModelForm):
     class Meta:
@@ -17,6 +22,12 @@ class ManagerRegistrationForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput
         }
+
+    def is_valid(self):
+        if not Manager.validate_data(self.data):
+            return False
+        
+        return super().is_valid()
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
@@ -45,26 +56,10 @@ class VehicleForm(forms.ModelForm):
             'license_plate': forms.TextInput(attrs={'placeholder': 'ABC1234'})
         }
 
-    def _check_license_plate(self, license_plate):
-        return bool(re.match(r'^([A-Z]|[a-z]){3}\d{4}$', license_plate))
-
     def is_valid(self):
-        license_plate = self.data['license_plate']
-        if not self._check_license_plate(license_plate):
-            self.add_error('license_plate', 'Invalid license plate')
+        if not Vehicle.validate_data(self.data):
             return False
-        
-        model = self.data['model']
-        if not model.isascii():
-            self.add_error('model', 'Model must be ASCII')
-            return False
-        
-        color = self.data['color']
-        if not color.isascii():
-            self.add_error('color', 'Color must be ASCII')
-            return False
-        
-        return True
+        return super().is_valid()
     
     def save(self, owner, commit=True):
         vehicle = super().save(commit=False)

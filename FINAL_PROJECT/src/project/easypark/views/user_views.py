@@ -96,7 +96,7 @@ def available_spaces(request, username, entry_time, exit_time):
 
     entry_time_url = DateConverter.to_url(entry_time)
     exit_time_url = DateConverter.to_url(exit_time)
-    
+
     return render(
         request, 
         'easypark/user/rentals/available-spaces.html', 
@@ -119,4 +119,15 @@ def list_parking_spaces(request, username):
         request, 
         'easypark/user/parking-spaces.html', 
         {'username': username, 'parking_spaces': parking_spaces}
+    )
+
+def remove_vehicle(request, username, vehicle_id):
+    user = User.objects.get(username=username)
+    vehicle = Vehicle.objects.get(id=vehicle_id)
+    vehicle.delete()
+    vehicles = Vehicle.objects.filter(owner=user)
+    return render(
+        request, 
+        'easypark/user/vehicles.html', 
+        {'username': username, 'vehicles': vehicles}
     )

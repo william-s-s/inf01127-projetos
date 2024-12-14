@@ -105,8 +105,3 @@ class RentalTimeForm(forms.Form):
         'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'})
     }
-
-
-
-    
-

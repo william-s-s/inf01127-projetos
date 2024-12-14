@@ -65,3 +65,23 @@ def list_parking_spaces(request, username):
         'easypark/manager/parking-spaces.html', 
         {'username': username, 'parking_spaces': parking_spaces}
     )
+
+def edit_parking_space(request, username, position):
+    parking_space = ParkingSpace.objects.get(position=position)
+    if request.method == 'POST':
+        form = ParkingSpaceForm(request.POST, instance=parking_space)
+        if form.is_valid():
+            form.save()
+            parking_spaces = ParkingSpace.objects.all()
+            return render(
+                request,
+                'easypark/manager/parking-spaces.html',
+                {'username': username, 'parking_spaces': parking_spaces}
+            )
+    else:
+        form = ParkingSpaceForm(instance=parking_space)
+    return render(
+        request, 
+        'easypark/manager/parking-spaces/edit-space.html', 
+        {'form': form, 'username': username, 'position': position}
+    )

@@ -9,11 +9,11 @@
     <ul>
         {% for space in parking_spaces %}
         <li>{{ space }} - 
-            <a href="/easypark/manager/edit-space/{{ username }}/{{ space.id }}/">Edit</a>
+            <a href="/easypark/manager/parking-spaces/edit-space/{{ username }}/{{ space.position }}/">Edit</a>
         </li>
         {% endfor %}
     </ul>
-    <a href="/easypark/manager/parking-spaces/add-space/{{ username }}">Add Parking Space</a>
+    <a href="/easypark/manager/parking-spaces/add-space/{{ username }}">Add Parking Space</a> | 
     <a href="/easypark/manager/home/{{ username }}/">Back to Home</a>
 </body>
 </html>

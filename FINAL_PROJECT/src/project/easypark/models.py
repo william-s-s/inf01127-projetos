@@ -100,7 +100,6 @@ class Vehicle(models.Model):
         )
 
     def __str__(self):
-        owner = self.owner.username if self.owner else 'Deleted'
         return f'{self.license_plate} | {self.model} | {self.color}'
 
 class Rental(models.Model):

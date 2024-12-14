@@ -71,25 +71,29 @@ class VehicleForm(forms.ModelForm):
 class RentalForm(forms.ModelForm):
     class Meta:
         model = Rental
-        fields = ['vehicle', 'entry_time', 'exit_time', 'payment_method']
-        widgets = {
-            'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+        fields = ['vehicle', 'payment_method']
+        ignore = ['entry_time', 'exit_time', 'position']
+
+    def __init__(self, *args, **kwargs):
+        self.temp_data = {
+            'entry_time': kwargs.pop('entry_time'),
+            'exit_time': kwargs.pop('exit_time'),
+            'position': kwargs.pop('position')
         }
+        super().__init__(*args, **kwargs)
 
     def is_valid(self):
-        entry_time = self.data['entry_time']
-        exit_time = self.data['exit_time']
-
-        if entry_time and exit_time and entry_time >= exit_time:
-            self.add_error(None, 'Entry time must be before exit time')
+        data = self.data.copy()
+        data.update(self.temp_data)
+        if not Rental.validate_data(data):
             return False
-        
         return super().is_valid()
     
-    def save(self, position, commit=True):
+    def save(self, commit=True):
         rental = super().save(commit=False)
-        rental.parking_space = ParkingSpace.objects.get(position=position)
+        rental.entry_time = self.temp_data['entry_time']
+        rental.exit_time = self.temp_data['exit_time']
+        rental.parking_space = ParkingSpace.objects.get(position=self.temp_data['position'])
         if commit:
             rental.save()
         return rental

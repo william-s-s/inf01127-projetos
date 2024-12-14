@@ -1,7 +1,11 @@
+from datetime import datetime
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from ..models import User, Vehicle, Rental, ParkingSpace
 from ..forms import VehicleForm, RentalForm, RentalTimeForm
+from ..utils.converters import DateConverter
 
 def user_home(request, username):
     return render(
@@ -39,11 +43,16 @@ def add_vehicle(request, username):
         {'form': form, 'username': username}
     )
 
-def add_rental(request, username, position):
+def add_rental(request, username, entry_time, exit_time, position):
     if request.method == 'POST':
-        form = RentalForm(request.POST)
+        form = RentalForm(
+            request.POST, 
+            entry_time=entry_time, 
+            exit_time=exit_time, 
+            position=position
+        )
         if form.is_valid():
-            form.save(position=position)
+            form.save()
             user = User.objects.get(username=username)
             vehicles = Vehicle.objects.filter(owner=user)
             rentals = Rental.objects.filter(vehicle__in=vehicles)
@@ -53,11 +62,16 @@ def add_rental(request, username, position):
                 {'rentals': rentals, 'username': username}
             )
     else:
-        form = RentalForm()
+        form = RentalForm(
+            entry_time=entry_time, 
+            exit_time=exit_time, 
+            position=position
+        )
     return render(
         request, 
         'easypark/user/rentals/add-rental.html', 
-        {'form': form, 'username': username}
+        {'form': form, 'username': username, 'entry_time': entry_time, 
+         'exit_time': exit_time, 'position': position}
     )
 
 def enter_rental_time(request, username):
@@ -66,11 +80,8 @@ def enter_rental_time(request, username):
         if form.is_valid():
             entry_time = form.cleaned_data['entry_time']
             exit_time = form.cleaned_data['exit_time']
-            spaces = ParkingSpace.get_available_spaces(entry_time, exit_time)
-            return render(
-                request, 
-                'easypark/user/rentals/available-spaces.html', 
-                {'entry_time': entry_time, 'exit_time': exit_time, 'parking_spaces': spaces, 'username': username}
+            return HttpResponseRedirect(
+                reverse('easypark:available-spaces', args=(username, entry_time, exit_time))
             )
     else:
         form = RentalTimeForm()
@@ -82,10 +93,14 @@ def enter_rental_time(request, username):
 
 def available_spaces(request, username, entry_time, exit_time):
     spaces = ParkingSpace.get_available_spaces(entry_time, exit_time)
+
+    entry_time_url = DateConverter.to_url(entry_time)
+    exit_time_url = DateConverter.to_url(exit_time)
+    
     return render(
         request, 
         'easypark/user/rentals/available-spaces.html', 
-        {'entry_time': entry_time, 'exit_time': exit_time, 'parking_spaces': spaces, 'username': username}
+        {'entry_time': entry_time_url, 'exit_time': exit_time_url, 'parking_spaces': spaces, 'username': username}
     )
 
 def list_user_rentals(request, username):

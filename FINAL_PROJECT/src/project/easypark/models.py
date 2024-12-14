@@ -1,6 +1,9 @@
 from django.db import models
 from math import ceil
 import re
+import pytz
+
+utc = pytz.UTC
 
 class ParkingSpace(models.Model):
     class ParkingSpaceSize(models.TextChoices):
@@ -16,9 +19,13 @@ class ParkingSpace(models.Model):
     covered = models.BooleanField(default=False)
 
     def is_available(self, entry_time, exit_time):
+        entry_time_utc = entry_time.replace(tzinfo=utc)
+        exit_time_utc = exit_time.replace(tzinfo=utc)
         rentals = Rental.objects.filter(parking_space=self, canceled=False)
         for rental in rentals:
-            if rental.entry_time < exit_time and rental.exit_time > entry_time:
+            rental_entry_time = rental.entry_time.replace(tzinfo=utc)
+            rental_exit_time = rental.exit_time.replace(tzinfo=utc)
+            if rental_entry_time < exit_time_utc and rental_exit_time > entry_time_utc:
                 return False
         return True
     
@@ -112,6 +119,12 @@ class Rental(models.Model):
     payment_method = models.CharField(max_length=4, choices=PaymentMethod.choices, default=PaymentMethod.CASH)
     payment_confirmed = models.BooleanField('payment confirmed', default=False)
     canceled = models.BooleanField(default=False)
+
+    @staticmethod
+    def validate_data(data):
+        entry_time = data['entry_time']
+        exit_time = data['exit_time']
+        return entry_time < exit_time
 
     def _calculate_total_price(self):
         if self.entry_time and self.exit_time and self.parking_space:

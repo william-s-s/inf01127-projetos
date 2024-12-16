@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parking Spaces</title>
+</head>
+<body>
+    <h1>Parking Spaces</h1>
+    <ul>
+        {% for space in parking_spaces %}
+        <li>{{ space }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/easypark/user/home/{{ username }}/">Back to Home</a>
+</body>
+</html>

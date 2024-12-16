@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Home</title>
+</head>
+<body>
+    <h1>Welcome, {{ username }}</h1>
+    <a href="/easypark/manager/parking-spaces/{{ username }}">View Parking Spaces</a> | 
+    <a href="/easypark/manager/parking-spaces/add-space/{{ username }}">Add Parking Space</a> | 
+    <a href="/easypark/manager/rentals/{{ username }}">Manage Rentals</a> | 
+    <a href="/easypark/">Logout</a>
+</body>

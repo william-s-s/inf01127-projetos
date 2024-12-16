@@ -38,7 +38,7 @@
         </div>
 
         <!-- User Login Form -->
-        <form id="userLoginForm" method="POST" style="display: block;">
+        <form id="userLoginForm" method="POST" style="display: block;" action="">
             {% csrf_token %}
             <input type="hidden" name="user_type" value="user"> <!-- Hidden field for user type -->
             <div class="form-group">
@@ -53,7 +53,7 @@
         </form>
 
         <!-- Manager Login Form (Initially Hidden) -->
-        <form id="managerLoginForm" method="POST" style="display: none;">
+        <form id="managerLoginForm" method="POST" style="display: none;" action="">
             {% csrf_token %}
             <input type="hidden" name="user_type" value="manager"> <!-- Hidden field for manager type -->
             <div class="form-group">
@@ -70,6 +70,11 @@
         <!-- Switch Button -->
         <button id="switchToManager" class="btn btn-secondary btn-switch">Switch to Manager Login</button>
         <button id="switchToUser" class="btn btn-secondary btn-switch" style="display: none;">Switch to User Login</button>
+
+         <!-- Register Buttons -->
+         <button id="registerUserBtn" class="btn btn-success btn-register">Register as User</button>
+         <button id="registerManagerBtn" class="btn btn-success btn-register">Register as Manager</button>
+
     </div>
 
     <script>
@@ -88,6 +93,14 @@
             switchToUserButton.style.display = 'block';  // Show "Switch to User" button
             formStatus.innerText = 'You are on Manager Login';  // Update status message
         });
+
+        document.getElementById('registerUserBtn').onclick = function() {
+        window.location.href = '{% url "easypark:register-user" %}';
+     };
+
+    document.getElementById('registerManagerBtn').onclick = function() {
+        window.location.href = '{% url "easypark:register-manager" %}';
+    };
 
         // Switch to User Login
         switchToUserButton.addEventListener('click', function () {

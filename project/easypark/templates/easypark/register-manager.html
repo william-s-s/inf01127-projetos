@@ -2,15 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register User</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            display: block;
+            margin: 20px auto;
+        }
+        .form-status {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register as a Manager</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-    <a href="/easypark/">Back to Home</a>
+    <div class="form-container">
+        <h1>Register as a User</h1>
+
+        <!-- Status Message (if needed) -->
+        <div id="formStatus" class="form-status">
+            Please fill in the details below to register.
+        </div>
+
+        <!-- User Registration Form -->
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+
+        <!-- Back Button -->
+        <a href="/easypark/" class="btn btn-secondary btn-back">Back to Home</a>
+    </div>
 </body>
 </html>

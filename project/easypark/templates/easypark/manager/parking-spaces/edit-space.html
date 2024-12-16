@@ -1,0 +1,17 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Parking Space</title>
+</head>
+<body>
+    <h1>Edit Parking Space</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Edit</button>
+    </form>
+    <a href="/easypark/manager/parking-spaces/{{ username }}/">Back to Parking Spaces</a> | 
+    <a href="/easypark/manager/home/{{ username }}/">Back to Home</a>
+</body>
+</html>

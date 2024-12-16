@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn-custom {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .logout-btn {
+            margin-top: 30px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Welcome, {{ username }}!</h1>
+        <p class="lead">You are logged in as a user. Choose one of the options below:</p>
+    </div>
+
+    <a href="/easypark/user/parking-spaces/{{ username }}" class="btn btn-primary btn-custom">View Parking Spaces</a>
+    <a href="/easypark/user/vehicles/{{ username }}/" class="btn btn-primary btn-custom">View Your Vehicles</a>
+    <a href="/easypark/user/rentals/{{ username }}/" class="btn btn-primary btn-custom">View Your Rentals</a>
+    <a href="/easypark/user/rentals/enter-rental-time/{{ username }}/" class="btn btn-primary btn-custom">Rent a Parking Space</a>
+
+    <a href="/easypark/" class="btn btn-danger logout-btn">Logout</a>
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

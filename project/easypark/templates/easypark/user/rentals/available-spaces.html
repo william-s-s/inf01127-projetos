@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Spaces</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        .back-btn {
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Available Parking Spaces</h1>
+        
+        {% for space in parking_spaces %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Space Position: {{ space.position }}</h5>
+                    <p class="card-text">Rent this space for your parking needs.</p>
+                    <a href="/easypark/user/rentals/add-rental/{{ username }}/{{ entry_time }}/{{ exit_time }}/{{ space.position }}/" class="btn btn-primary">Rent</a>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <div class="text-center back-btn">
+            <a href="/easypark/user/home/{{ username }}/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

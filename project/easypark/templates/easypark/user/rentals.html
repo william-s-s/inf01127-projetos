@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Rentals</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        .back-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Your Rentals</h1>
+        
+        <ul class="list-group">
+            {% for rental in rentals %}
+            <li class="list-group-item">
+                {{ rental }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="text-center back-btn">
+            <a href="/easypark/user/home/{{ username }}/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

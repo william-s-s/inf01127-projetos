@@ -3,3 +3,4 @@
 *.venv/
 *dist/
 *build/
+FINAL_PROJECT/src/project/db.sqlite3

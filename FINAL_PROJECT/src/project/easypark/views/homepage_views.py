@@ -55,7 +55,7 @@ def login_user(request):
                     form.add_error('username', 'Invalid username')
                     return render(
                         request, 
-                        'easypark/index.html',
+                        'easypark/login-user.html',
                         {'form': form}
                     )
             except:
@@ -65,7 +65,7 @@ def login_user(request):
                     form.add_error('username', 'Invalid username')
                     return render(
                         request, 
-                        'easypark/index.html',
+                        'easypark/login-user.html',
                         {'form': form}
                     )
 
@@ -75,7 +75,7 @@ def login_user(request):
                     form.add_error('password', 'Invalid password')
                     return render(
                         request, 
-                        'easypark/index.html',
+                        'easypark/login-user.html',
                         {'form': form}
                     )
                 
@@ -86,7 +86,7 @@ def login_user(request):
         form = LoginForm()
     return render(
         request, 
-        'easypark/index.html', 
+        'easypark/login-user.html', 
         {'form': form}
     )
 
@@ -103,7 +103,7 @@ def login_manager(request):
                 form.add_error('username', 'Invalid username')
                 return render(
                     request, 
-                    'easypark/index.html', 
+                    'easypark/login-manager.html', 
                     {'form': form}
                 )
             
@@ -113,7 +113,7 @@ def login_manager(request):
                 form.add_error('password', 'Invalid password')
                 return render(
                     request, 
-                    'easypark/index.html',
+                    'easypark/login-manager.html',
                     {'form': form}
                 )
             
@@ -124,6 +124,6 @@ def login_manager(request):
         form = LoginForm()
     return render(
         request, 
-        'easypark/index.html',
+        'easypark/login-manager.html',
         {'form': form}
     )

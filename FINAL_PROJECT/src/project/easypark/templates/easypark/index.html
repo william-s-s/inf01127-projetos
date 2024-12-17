@@ -2,15 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to EasyPark</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn-switch {
+            display: block;
+            margin: 20px auto;
+        }
+        .form-status {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .btn-register {
+            display: block;
+            margin: 10px auto;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .is-invalid {
+            border-color: red;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to EasyPark!</h1>
-    <nav>
-        <a href="/easypark/register-user/">Register as User</a> | 
-        <a href="/easypark/register-manager/">Register as Manager</a> | 
-        <a href="/easypark/login-user/">Login as User</a> | 
-        <a href="/easypark/login-manager/">Login as Manager</a>
-    </nav>
+    <div class="form-container">
+        <h1>Login</h1>
+
+        <!-- Error Message -->
+        {% if error_message %}
+        <div class="error-message">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
+        <!-- Status Message -->
+        <div id="formStatus" class="form-status">
+            You are on User Login
+        </div>
+
+        <!-- User Login Form -->
+        <form id="userLoginForm" method="POST" action="{% url 'easypark:login-user' %}" style="display: block;">
+            {% csrf_token %}
+            <input type="hidden" name="user_type" value="user"> <!-- Hidden field for user type -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" class="form-control {% if error_message %}is-invalid{% endif %}" placeholder="Username" value="{{ username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" class="form-control {% if error_message %}is-invalid{% endif %}" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <!-- Manager Login Form (Initially Hidden) -->
+        <form id="managerLoginForm" method="POST" action="{% url 'easypark:login-manager' %}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="user_type" value="manager"> <!-- Hidden field for manager type -->
+            <div class="form-group">
+                <label for="managerUsername">Username</label>
+                <input type="text" name="username" id="managerUsername" class="form-control" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <label for="managerPassword">Password</label>
+                <input type="password" name="password" id="managerPassword" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <!-- Switch Button -->
+        <button id="switchToManager" class="btn btn-secondary btn-switch">Switch to Manager Login</button>
+        <button id="switchToUser" class="btn btn-secondary btn-switch" style="display: none;">Switch to User Login</button>
+
+        <!-- Register Buttons -->
+        <button id="registerUserBtn" class="btn btn-success btn-register">Register as User</button>
+        <button id="registerManagerBtn" class="btn btn-success btn-register">Register as Manager</button>
+
+    </div>
+
+    <script>
+        // Get elements
+        const userLoginForm = document.getElementById('userLoginForm');
+        const managerLoginForm = document.getElementById('managerLoginForm');
+        const switchToManagerButton = document.getElementById('switchToManager');
+        const switchToUserButton = document.getElementById('switchToUser');
+        const formStatus = document.getElementById('formStatus');
+
+        // Switch to Manager Login
+        switchToManagerButton.addEventListener('click', function () {
+            toggleForms(managerLoginForm, userLoginForm, switchToUserButton, switchToManagerButton, 'You are on Manager Login');
+        });
+
+        // Switch to User Login
+        switchToUserButton.addEventListener('click', function () {
+            toggleForms(userLoginForm, managerLoginForm, switchToManagerButton, switchToUserButton, 'You are on User Login');
+        });
+
+        // Redirect function for register buttons
+        function redirectTo(url) {
+            window.location.href = url;
+        }
+
+        document.getElementById('registerUserBtn').onclick = function() {
+            redirectTo('{% url "easypark:register-user" %}');
+        };
+
+        document.getElementById('registerManagerBtn').onclick = function() {
+            redirectTo('{% url "easypark:register-manager" %}');
+        };
+
+        // Toggle between user and manager forms
+        function toggleForms(formToShow, formToHide, switchButtonToShow, switchButtonToHide, statusText) {
+            formToShow.style.display = 'block';
+            formToHide.style.display = 'none';
+            switchButtonToShow.style.display = 'block';
+            switchButtonToHide.style.display = 'none';
+            formStatus.innerText = statusText;
+        }
+    </script>
 </body>
 </html>

@@ -32,6 +32,15 @@
             margin-bottom: 20px;
         }
 
+        .form-control {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+        }
+
+        .form-control[readonly] {
+            background-color: #e9ecef;
+        }
+
         .btn-primary {
             background-color: #3498db;
             color: white;
@@ -67,8 +76,16 @@
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
+                <!-- Displaying the Position as a Static Field -->
+                <label for="position">Position</label>
+                <input type="text" class="form-control" id="position" value="{{ form.position.value }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <!-- Render other form fields as usual -->
                 {{ form.as_p }}
             </div>
+
             <button type="submit" class="btn btn-primary btn-block">Edit</button>
         </form>
 

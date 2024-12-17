@@ -1,9 +1,6 @@
+import re
 from django.db import models
 from math import ceil
-import re
-import pytz
-
-utc = pytz.UTC
 
 class ParkingSpace(models.Model):
     class ParkingSpaceSize(models.TextChoices):
@@ -19,13 +16,9 @@ class ParkingSpace(models.Model):
     covered = models.BooleanField(default=False)
 
     def is_available(self, entry_time, exit_time):
-        entry_time_utc = entry_time.replace(tzinfo=utc)
-        exit_time_utc = exit_time.replace(tzinfo=utc)
         rentals = Rental.objects.filter(parking_space=self, canceled=False)
         for rental in rentals:
-            rental_entry_time = rental.entry_time.replace(tzinfo=utc)
-            rental_exit_time = rental.exit_time.replace(tzinfo=utc)
-            if rental_entry_time < exit_time_utc and rental_exit_time > entry_time_utc:
+            if entry_time < rental.exit_time and exit_time > rental.entry_time:
                 return False
         return True
     
@@ -140,9 +133,8 @@ class Rental(models.Model):
     def __str__(self):
         vehicle = self.vehicle.license_plate if self.vehicle else 'Deleted'
         parking_space = self.parking_space.position if self.parking_space else 'Deleted'
-        # Remove timezone information
-        entry_time = self.entry_time.strftime('%Y-%m-%d %H:%M:%S')
-        exit_time = self.exit_time.strftime('%Y-%m-%d %H:%M:%S')
+        entry_time = self.entry_time.strftime('%Y-%m-%d %H:%M')
+        exit_time = self.exit_time.strftime('%Y-%m-%d %H:%M')
         return f'{parking_space} | {entry_time} - {exit_time} | {vehicle}'
 
 

@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 
-from ..models import User, Manager, ParkingSpace
+from ..models import User, Manager
 from ..forms import UserRegistrationForm, ManagerRegistrationForm, LoginForm
 
 def index(request):
@@ -49,29 +49,39 @@ def login_user(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            user = User.objects.get(username=username)
-
-            if not user:
-                form.add_error('username', 'Invalid username')
-                return render(
-                    request, 
-                    'easypark/login-user.html', 
-                    {'form': form}
-                )
-
             try:
-                validate_password(password, user.password)
+                manager = Manager.objects.get(username=username)
+                if manager:
+                    form.add_error('username', 'Invalid username')
+                    return render(
+                        request, 
+                        'easypark/login-user.html',
+                        {'form': form}
+                    )
             except:
-                form.add_error('password', 'Invalid password')
-                return render(
-                    request, 
-                    'easypark/login-user.html', 
-                    {'form': form}
+                try:
+                        user = User.objects.get(username=username)
+                except:
+                    form.add_error('username', 'Invalid username')
+                    return render(
+                        request, 
+                        'easypark/login-user.html',
+                        {'form': form}
+                    )
+
+                try:
+                    validate_password(password, user.password)
+                except:
+                    form.add_error('password', 'Invalid password')
+                    return render(
+                        request, 
+                        'easypark/login-user.html',
+                        {'form': form}
+                    )
+                
+                return HttpResponseRedirect(
+                    reverse('easypark:user-home', args=(user.username,))
                 )
-            
-            return HttpResponseRedirect(
-                reverse('easypark:user-home', args=(user.username,))
-            )
     else:
         form = LoginForm()
     return render(
@@ -87,9 +97,9 @@ def login_manager(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             
-            manager = Manager.objects.get(username=username)
-
-            if not manager:
+            try:
+                manager = Manager.objects.get(username=username)
+            except:
                 form.add_error('username', 'Invalid username')
                 return render(
                     request, 
@@ -103,7 +113,7 @@ def login_manager(request):
                 form.add_error('password', 'Invalid password')
                 return render(
                     request, 
-                    'easypark/login-manager.html', 
+                    'easypark/login-manager.html',
                     {'form': form}
                 )
             
@@ -114,6 +124,6 @@ def login_manager(request):
         form = LoginForm()
     return render(
         request, 
-        'easypark/login-manager.html', 
+        'easypark/login-manager.html',
         {'form': form}
     )

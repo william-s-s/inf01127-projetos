@@ -2,13 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            font-size: 1.1rem;
+            padding: 12px 25px;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .logout-link {
+            text-align: center;
+            margin-top: 20px;
+            display: block;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, {{ username }}</h1>
-    <a href="/easypark/user/parking-spaces/{{ username }}">View Parking Spaces</a> | 
-    <a href="/easypark/user/vehicles/{{ username }}/">View Your Vehicles</a> | 
-    <a href="/easypark/user/rentals/{{ username }}/">View Your Rentals</a> | 
-    <a href="/easypark/user/rentals/enter-rental-time/{{ username }}/">Rent a Parking Space</a> | 
-    <a href="/easypark/">Logout</a>
+
+    <div class="container">
+        <h1>Welcome, {{ username }}</h1>
+
+        <div class="btn-group">
+            <a href="/easypark/user/parking-spaces/{{ username }}" class="btn btn-primary">View Parking Spaces</a>
+            <a href="/easypark/user/vehicles/{{ username }}/" class="btn btn-primary">View Your Vehicles</a>
+            <a href="/easypark/user/rentals/{{ username }}/" class="btn btn-primary">View Your Rentals</a>
+            <a href="/easypark/user/rentals/enter-rental-time/{{ username }}/" class="btn btn-primary">Rent a Parking Space</a>
+        </div>
+
+        <a href="/easypark/" class="logout-link">Logout</a>
+    </div>
+
 </body>
+</html>

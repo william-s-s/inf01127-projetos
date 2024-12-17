@@ -51,6 +51,7 @@ def confirm_payment(request, username, rental_id):
 def cancel_rental(request, username, rental_id):
     rental = Rental.objects.get(id=rental_id)
     rental.canceled = True
+    rental.save()
     rentals = Rental.objects.all()
     return render(
         request,

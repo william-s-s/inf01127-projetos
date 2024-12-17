@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 
-from ..models import User, Manager, ParkingSpace
+from ..models import User, Manager
 from ..forms import UserRegistrationForm, ManagerRegistrationForm, LoginForm
 
 def index(request):

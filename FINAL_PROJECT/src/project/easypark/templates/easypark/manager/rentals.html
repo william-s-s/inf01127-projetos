@@ -2,18 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Rentals</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Highlight Canceled Rentals */
+        .canceled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Action Buttons */
+        .button {
+            display: inline-block;
+            padding: 6px 12px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-cancel {
+            background-color: #dc3545;
+        }
+
+        .button-cancel:hover {
+            background-color: #c82333;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Rental List</h1>
-    <ul>
-        {% for rental in rentals %}
-        <li>{{ rental }} - 
-            <a href="/easypark/manager/rentals/confirm/{{ username }}/{{ rental.id }}/">Confirm Payment</a> | 
-            <a href="/easypark/manager/rentals/cancel/{{ username }}/{{ rental.id }}/">Cancel Rental</a>
-        </li>
-        {% endfor %}
-    </ul>
-    <a href="/easypark/manager/home/{{ username }}/">Back to Home</a>
+
+    <!-- Rentals Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Parking Space</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Vehicle</th>
+                <th>Total Price</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals %}
+            <tr class="{% if rental.canceled %}canceled{% endif %}">
+                <td>{{ rental.parking_space.position }}</td>
+                <td>{{ rental.entry_time }}</td>
+                <td>{{ rental.exit_time }}</td>
+                <td>{{ rental.vehicle.license_plate }}</td>
+                <td>$ {{ rental.total_price }}</td>
+                <td>{{ rental.get_payment_method_display }}</td>
+                <td>
+                    {% if rental.canceled %}
+                        Canceled
+                    {% elif rental.payment_confirmed %}
+                        Finished
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not rental.canceled and not rental.payment_confirmed %}
+                        <a href="/easypark/manager/rentals/confirm/{{ username }}/{{ rental.id }}/" class="button">Confirm Payment</a>
+                        <a href="/easypark/manager/rentals/cancel/{{ username }}/{{ rental.id }}/" class="button button-cancel">Cancel Rental</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back to Home Link -->
+    <a href="/easypark/manager/home/{{ username }}/" class="back-link">Back to Home</a>
 </body>
 </html>

@@ -2,16 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Spaces</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        /* Parking Lot Map */
+        .parking-lot {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr); /* 10 spaces per row */
+            gap: 10px;
+            margin: 20px;
+            justify-content: center;
+        }
+
+        .parking-space {
+            width: 100px;
+            height: 60px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .available {
+            background-color: #007bff; /* Blue for available */
+            cursor: pointer;
+        }
+
+        .unavailable {
+            background-color: #dc3545; /* Red for unavailable */
+            cursor: not-allowed;
+        }
+
+        .parking-space:hover {
+            transform: scale(1.1);
+        }
+
+        .parking-space.unavailable:hover {
+            transform: none; /* Disable hover effect for unavailable spaces */
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .parking-space:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Available Spaces</h1>
-    <ul>
-        {% for space in parking_spaces %}
-        <li>{{ space }} - 
-            <a href="/easypark/user/rentals/add-rental/{{ username }}/{{ entry_time }}/{{ exit_time }}/{{ space.position }}/">Rent</a> 
-        </li>
+
+    <!-- Parking Lot Map -->
+    <div class="parking-lot">
+        {% for letter, spaces in parking_spaces.items %}
+            <div class="row">
+                {% for space in spaces %}
+                    <div class="parking-space {% if space.is_available_flag %}available{% else %}unavailable{% endif %}">
+                        {% if space.is_available_flag %}
+                            <!-- Link for available spaces -->
+                            <a href="/easypark/user/rentals/add-rental/{{ username }}/{{ entry_time }}/{{ exit_time }}/{{ space.position }}/" 
+                               style="text-decoration: none; color: inherit;">
+                                {{ space.position }}
+                            </a>
+                        {% else %}
+                            <!-- No link for unavailable spaces -->
+                            {{ space.position }}
+                        {% endif %}
+                        <div class="tooltip">
+                            Price: ${{ space.price }}/hr
+                            <br>
+                            {% if space.covered %}
+                                Covered
+                            {% else %}
+                                Open
+                            {% endif %}
+                            {% if space.electric_charging %}
+                                <br>
+                                Electric Charging
+                            {% endif %}
+                            {% if space.handicapped %}
+                                <br>
+                                Handicapped
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endfor %}
-    </ul>
-    <a href="/easypark/user/home/{{ username }}/">Back to Home</a>
+    </div>
+
+    <!-- Back to Home Link -->
+    <a href="/easypark/user/home/{{ username }}/" class="back-link">Back to Home</a>
+</body>
 </html>

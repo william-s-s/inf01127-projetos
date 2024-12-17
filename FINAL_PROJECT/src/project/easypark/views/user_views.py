@@ -94,16 +94,34 @@ def enter_rental_time(request, username):
     )
 
 def available_spaces(request, username, entry_time, exit_time):
-    spaces = ParkingSpace.get_available_spaces(entry_time, exit_time)
+    spaces = ParkingSpace.objects.all()
+
+    for space in spaces:
+        space.is_available_flag = space.is_available(entry_time, exit_time)  # Add a flag for the template
 
     entry_time_url = DateConverter.to_url(entry_time)
     exit_time_url = DateConverter.to_url(exit_time)
 
-    return render(
-        request, 
-        'easypark/user/rentals/available-spaces.html', 
-        {'entry_time': entry_time_url, 'exit_time': exit_time_url, 'parking_spaces': spaces, 'username': username}
-    )
+    # Group spaces by letter (A, B, C, D)
+    grouped_spaces = {}
+    for space in spaces:
+        letter = space.position[0]  # 'A', 'B', etc.
+        if letter not in grouped_spaces:
+            grouped_spaces[letter] = []
+        grouped_spaces[letter].append(space)
+
+    # Sort spaces numerically within each group
+    for letter, spaces in grouped_spaces.items():
+        grouped_spaces[letter] = sorted(spaces, key=lambda x: int(x.position[1:]))  # Sort by the numeric part
+
+    template_name = 'easypark/user/rentals/available-spaces.html'
+    context = {
+        'entry_time': entry_time_url,
+        'exit_time': exit_time_url,
+        'parking_spaces': grouped_spaces,
+        'username': username
+    }
+    return render(request, template_name, context)
 
 def list_user_rentals(request, username):
     user = User.objects.get(username=username)

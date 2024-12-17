@@ -4,86 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Vehicles</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            margin-top: 50px;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
         }
 
         h1 {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
+            color: #444;
+            margin-bottom: 20px;
         }
 
-        .vehicle-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .vehicle-item {
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
             background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .vehicle-item a {
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Action Links */
+        .action-link {
             color: #e74c3c;
             text-decoration: none;
+            font-weight: bold;
         }
 
-        .vehicle-item a:hover {
+        .action-link:hover {
             text-decoration: underline;
         }
 
+        /* Action Links Container */
         .action-links {
-            display: block;
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .action-links a {
-            margin: 0 10px;
             color: #3498db;
+            text-decoration: none;
             font-size: 1.1rem;
+            margin: 0 10px;
         }
 
         .action-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Your Vehicles</h1>
+    <h1>Your Vehicles</h1>
 
-        <ul class="vehicle-list">
+    <!-- Vehicles Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>License Plate</th>
+                <th>Model</th>
+                <th>Color</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for vehicle in vehicles %}
-            <li class="vehicle-item">
-                <span>{{ vehicle }}</span>
-                <a href="/easypark/user/vehicles/remove-vehicle/{{ username }}/{{ vehicle.id }}/">Remove</a>
-            </li>
+            <tr>
+                <td>{{ vehicle.license_plate }}</td>
+                <td>{{ vehicle.model }}</td>
+                <td>{{ vehicle.color }}</td>
+                <td>
+                    <a href="/easypark/user/vehicles/remove-vehicle/{{ username }}/{{ vehicle.id }}/" class="action-link">
+                        Remove
+                    </a>
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </tbody>
+    </table>
 
-        <div class="action-links">
-            <a href="/easypark/user/vehicles/add-vehicle/{{ username }}/">Add Vehicle</a> | 
-            <a href="/easypark/user/home/{{ username }}/">Back to Home</a>
-        </div>
+    <!-- Action Links -->
+    <div class="action-links">
+        <a href="/easypark/user/vehicles/add-vehicle/{{ username }}/">Add Vehicle</a>
+        |
+        <a href="/easypark/user/home/{{ username }}/">Back to Home</a>
     </div>
 
 </body>

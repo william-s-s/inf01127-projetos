@@ -110,13 +110,13 @@
                 <td>{{ rental.entry_time }}</td>
                 <td>{{ rental.exit_time }}</td>
                 <td>{{ rental.vehicle.license_plate }}</td>
-                <td>$ {{ rental.total_price }}</td>
+                <td>${{ rental.total_price }}</td>
                 <td>{{ rental.get_payment_method_display }}</td>
                 <td>
                     {% if rental.canceled %}
                         Canceled
                     {% elif rental.payment_confirmed %}
-                        Finished
+                        Confirmed
                     {% else %}
                         Pending
                     {% endif %}

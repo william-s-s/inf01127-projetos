@@ -30,18 +30,31 @@ class ParkingSpace(models.Model):
             if space.is_available(entry_time, exit_time):
                 available_spaces.append(space)
         return available_spaces
+    
+    def get_attributes(self) -> str:
+        attributes = []
+        if self.covered:
+            attributes.append('Covered')
+        if self.electric_charging:
+            attributes.append('Electric charging')
+        if self.handicapped:
+            attributes.append('Handicapped')
+        if len(attributes) > 0:
+            return " - ".join(attributes)
+        return " "
+    
+    def get_size(self) -> str:
+        size = "Medium" if self.size == 'M' else "Small" if self.size == 'S' else "Large"
+        return size
+    
+    def get_price(self) -> str:
+        return f'${self.price}'
 
     def __str__(self):
-        size = "Medium" if self.size == 'M' else "Small" if self.size == 'S' else "Large"
-        properties = []
-        if self.electric_charging:
-            properties.append('Electric charging')
-        if self.handicapped:
-            properties.append('Handicapped')
-        if self.covered:
-            properties.append('Covered')
-        properties = properties if properties else ['None']
-        return f'{self.position} | {size} | $ {self.price} | {", ".join(properties)}'
+        size = self.get_size()
+        price = self.get_price()
+        attributes = self.get_attributes()
+        return f'{self.position} | {size} | {price} | {attributes}'
 
 class User(models.Model):
     name = models.CharField('full name', max_length=200)

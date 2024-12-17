@@ -8,18 +8,13 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 800px;
             margin-top: 50px;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -28,21 +23,47 @@
             margin-bottom: 30px;
         }
 
-        .list-group {
-            margin-bottom: 20px;
+        .parking-space-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
-        .list-group-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .parking-space-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+            display: flex;            /* Make it a flex container */
+            flex-direction: column;   /* Stack children vertically */
+            justify-content: space-between; /* Spread content */
+            height: 100%;             /* Ensure full height */
         }
 
+        .parking-space-attributes {
+            font-size: 1rem;
+            color: #555;
+            flex: 1;                  /* Let the content take remaining space */
+        }
+
+        .separator {
+            color: #6c757d; /* Subtle gray */
+            margin: 0 8px;
+            font-size: 1.2rem;
+        }
+
+        
         .btn-primary {
             background-color: #3498db;
             color: white;
             border: none;
             padding: 5px 10px;
+            margin-top: auto;         /* Push the button to the bottom */
         }
 
         .btn-primary:hover {
@@ -81,10 +102,18 @@
     <div class="container">
         <h1>Parking Spaces</h1>
 
-        <ul class="list-group">
+        <ul class="parking-space-list">
             {% for space in parking_spaces %}
-            <li class="list-group-item">
-                <span>{{ space }}</span>
+            <li class="parking-space-item">
+                <div class="parking-space-attributes">
+                    Position: {{ space.position }} 
+                    <span class="separator">•</span>
+                    Size: {{ space.size }} 
+                    <span class="separator">•</span>
+                    Price: ${{ space.price }} 
+                    
+                    {{ space.get_attributes }}
+                </div>
                 <a href="/easypark/manager/parking-spaces/edit-space/{{ username }}/{{ space.position }}/" class="btn btn-primary">Edit</a>
             </li>
             {% endfor %}
